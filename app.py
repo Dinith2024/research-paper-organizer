@@ -105,11 +105,11 @@ def _render_sidebar(store: ChromaResearchStore) -> dict[str, object]:
 
         api_key = saved_key
         if saved_key:
-            st.success(f"{provider_label} is ready", icon="✓")
+            st.success(f"{provider_label} is ready", icon="✅")
         else:
             st.warning(
                 f"{provider_label} is not configured by the app owner.",
-                icon="⚠️",
+                icon="⚠",
             )
 
         answer_model = st.text_input("Answer model", value=default_model)
@@ -225,7 +225,7 @@ def _render_upload(store: ChromaResearchStore) -> None:
                 added_chunks = sum(report.chunk_count for report in reports)
                 st.success(
                     f"Ready: {len(reports)} paper(s), {added_chunks} searchable chunks.",
-                    icon="✅",
+                    icon="📚",
                 )
             for error in errors:
                 st.error(error)
