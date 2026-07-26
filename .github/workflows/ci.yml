@@ -16,5 +16,15 @@ jobs:
           cache: "pip"
       - run: python -m pip install --upgrade pip
       - run: pip install -r requirements-dev.txt
-      - run: ruff check .
+      - name: Run ruff and auto-fix
+        run: |
+          # Apply automatic fixes where possible. Allow non-zero so we can inspect changes in the next step.
+          ruff check . --fix || true
+      - name: Fail if ruff produced changes (please commit fixes)
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "ruff made fixes. Run 'ruff check . --fix' locally, commit the changes, and push."
+            git --no-pager diff
+            exit 1
+          fi
       - run: pytest
