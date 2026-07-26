@@ -46,7 +46,7 @@ class DeterministicLexicalEmbedding:
         return {}
 
     @staticmethod
-    def build_from_config(config: dict[str, Any]) -> "DeterministicLexicalEmbedding":
+    def build_from_config(config: dict[str, Any]) -> DeterministicLexicalEmbedding:
         return DeterministicLexicalEmbedding()
 
 

@@ -1,7 +1,8 @@
 # download_onnx_model.py
+import shutil
 from pathlib import Path
-import httpx, shutil
 
+import httpx
 from chromadb.utils.embedding_functions import ONNXMiniLM_L6_V2
 
 emb = ONNXMiniLM_L6_V2()
