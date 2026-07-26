@@ -1,0 +1,160 @@
+:root {
+  --rf-primary: #635bff;
+  --rf-primary-dark: #4438ca;
+  --rf-ink: #172033;
+  --rf-muted: #667085;
+  --rf-border: rgba(99, 91, 255, 0.16);
+}
+
+.stApp {
+  background:
+    radial-gradient(circle at 85% 4%, rgba(99, 91, 255, 0.10), transparent 26rem),
+    radial-gradient(circle at 12% 20%, rgba(38, 198, 218, 0.08), transparent 24rem);
+}
+
+.block-container {
+  max-width: 1180px;
+  padding-top: 2.2rem;
+  padding-bottom: 4rem;
+}
+
+[data-testid="stSidebar"] {
+  border-right: 1px solid var(--rf-border);
+}
+
+.hero {
+  overflow: hidden;
+  position: relative;
+  padding: 2.7rem 3rem;
+  margin-bottom: 1.2rem;
+  border: 1px solid var(--rf-border);
+  border-radius: 26px;
+  color: white;
+  background:
+    radial-gradient(circle at 90% 15%, rgba(61, 225, 255, 0.38), transparent 22rem),
+    linear-gradient(135deg, #17153b 0%, #3c2e90 55%, #635bff 100%);
+  box-shadow: 0 24px 70px rgba(48, 38, 131, 0.23);
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  right: -40px;
+  bottom: -110px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+}
+
+.hero-kicker {
+  margin-bottom: 0.65rem;
+  color: #a9f2ff;
+  font-size: 0.76rem;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+}
+
+.hero h1 {
+  max-width: 720px;
+  margin: 0 0 0.7rem;
+  color: white;
+  font-size: clamp(2.1rem, 5vw, 3.55rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+.hero p {
+  max-width: 700px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.status-pill {
+  display: inline-block;
+  float: right;
+  padding: 0.45rem 0.75rem;
+  color: #13715b;
+  background: #e8fff7;
+  border: 1px solid #b7f1df;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.empty-state {
+  padding: 2.6rem 2rem;
+  margin: 1rem 0;
+  text-align: center;
+  border: 1px dashed rgba(99, 91, 255, 0.35);
+  border-radius: 22px;
+  background: rgba(99, 91, 255, 0.035);
+}
+
+.empty-state h3 {
+  margin-bottom: 0.3rem;
+}
+
+.empty-state p {
+  max-width: 680px;
+  margin: 0 auto;
+  color: var(--rf-muted);
+  line-height: 1.6;
+}
+
+.workflow-card {
+  min-height: 172px;
+  padding: 1.15rem;
+  border: 1px solid var(--rf-border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 12px 34px rgba(20, 24, 50, 0.06);
+}
+
+.workflow-card span {
+  color: var(--rf-primary);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.workflow-card h4 {
+  margin: 0.7rem 0 0.35rem;
+}
+
+.workflow-card p {
+  margin: 0;
+  color: var(--rf-muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+[data-testid="stChatMessage"] {
+  padding: 1rem;
+  border: 1px solid rgba(99, 91, 255, 0.10);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.stButton > button[kind="primary"] {
+  border: 0;
+  background: linear-gradient(135deg, var(--rf-primary-dark), var(--rf-primary));
+  box-shadow: 0 8px 22px rgba(99, 91, 255, 0.24);
+}
+
+@media (max-width: 700px) {
+  .block-container {
+    padding-top: 1rem;
+  }
+
+  .hero {
+    padding: 2rem 1.35rem;
+    border-radius: 20px;
+  }
+
+  .status-pill {
+    float: none;
+  }
+}

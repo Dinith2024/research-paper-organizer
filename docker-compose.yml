@@ -1,0 +1,16 @@
+services:
+  researchflow:
+    build: .
+    container_name: researchflow-ai
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env
+    environment:
+      CHROMA_PERSIST_DIR: /app/data/chroma
+    volumes:
+      - chroma_data:/app/data/chroma
+    restart: unless-stopped
+
+volumes:
+  chroma_data:

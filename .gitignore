@@ -1,68 +1,29 @@
-# ======================
-# Python
-# ======================
+# Secrets
+.env
+.streamlit/secrets.toml
 
+# Python
 __pycache__/
 *.py[cod]
-*$py.class
-
-
-# ======================
-# Virtual Environment
-# ======================
-
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
 venv/
-.env
-.env.*
 
+# Local application data
+data/chroma/
+data/uploads/
+*.sqlite3
 
-# ======================
-# Streamlit
-# ======================
-
-.streamlit/
-
-
-# ======================
-# ChromaDB
-# ======================
-
-chroma_db/
-
-
-# ======================
-# Data
-# ======================
-
-data/documents/*
-!data/documents/.gitkeep
-
-
-# ======================
-# IDE
-# ======================
-
-.vscode/
+# IDE and OS
 .idea/
-
-
-# ======================
-# OS
-# ======================
-
+.vscode/
 .DS_Store
 Thumbs.db
 
-
-# ======================
-# Logs
-# ======================
-
-*.log
-
-
-# ======================
-# Docker
-# ======================
-
-docker-compose.override.yml
+# Test and coverage output
+.coverage
+htmlcov/
+coverage.xml
