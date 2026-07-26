@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import math
+import os
 import re
+import time
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -26,6 +28,9 @@ class ChromaResearchStore:
         client: Any | None = None,
         embedding_function: Any | None = None,
     ) -> None:
+        # Set longer timeout for embedding model downloads
+        os.environ.setdefault("HTTPX_TIMEOUT", "120")
+        
         self.persist_directory = Path(persist_directory)
         self.persist_directory.mkdir(parents=True, exist_ok=True)
         self.collection_name = _safe_collection_name(collection_name)
@@ -43,6 +48,13 @@ class ChromaResearchStore:
                 / ".embedding_cache"
                 / embedding_function.MODEL_NAME
             )
+            # Configure httpx timeout for model downloads
+            try:
+                import httpx
+                # Set default timeout to 120 seconds
+                embedding_function._client_config = {"timeout": 120.0}
+            except Exception:
+                pass  # If configuration fails, continue with defaults
 
         self.client = client
         self.embedding_function = embedding_function
@@ -57,13 +69,29 @@ class ChromaResearchStore:
     def upsert_chunks(self, chunks: list[DocumentChunk], batch_size: int = 100) -> None:
         if not chunks:
             return
+        # Set longer timeout for httpx to download embedding model
+        os.environ.setdefault("HTTPX_TIMEOUT", "120")
+        
         for start in range(0, len(chunks), batch_size):
             batch = chunks[start : start + batch_size]
-            self.collection.upsert(
-                ids=[chunk.id for chunk in batch],
-                documents=[chunk.text for chunk in batch],
-                metadatas=[chunk.metadata for chunk in batch],
-            )
+            # Retry with exponential backoff for timeout errors
+            max_retries = 3
+            for attempt in range(max_retries):
+                try:
+                    self.collection.upsert(
+                        ids=[chunk.id for chunk in batch],
+                        documents=[chunk.text for chunk in batch],
+                        metadatas=[chunk.metadata for chunk in batch],
+                    )
+                    break  # Success, exit retry loop
+                except Exception as e:
+                    error_msg = str(e).lower()
+                    if "timeout" in error_msg and attempt < max_retries - 1:
+                        wait_time = 2 ** attempt  # Exponential backoff: 1s, 2s, 4s
+                        print(f"Timeout during upsert (attempt {attempt + 1}/{max_retries}), retrying in {wait_time}s...")
+                        time.sleep(wait_time)
+                    else:
+                        raise
 
     def search(self, query: str, top_k: int = 6) -> list[RetrievedChunk]:
         count = self.count()

@@ -225,7 +225,7 @@ def _render_upload(store: ChromaResearchStore) -> None:
                 added_chunks = sum(report.chunk_count for report in reports)
                 st.success(
                     f"Ready: {len(reports)} paper(s), {added_chunks} searchable chunks.",
-                    icon="✓",
+                    icon="✅",
                 )
             for error in errors:
                 st.error(error)
