@@ -24,6 +24,12 @@ class TinyEmbedding:
         return TinyEmbedding()
 
 
+def test_default_embedding_function_is_local(tmp_path) -> None:
+    store = ChromaResearchStore(tmp_path, "default_embedding_collection")
+
+    assert store.embedding_function.name() == "deterministic-lexical-embedding"
+
+
 def test_chroma_upsert_search_and_catalog(tmp_path) -> None:
     store = ChromaResearchStore(
         tmp_path,

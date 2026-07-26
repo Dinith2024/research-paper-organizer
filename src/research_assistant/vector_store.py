@@ -4,11 +4,50 @@ import math
 import os
 import re
 import time
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
 from .domain import DocumentChunk, RetrievedChunk
+
+
+class DeterministicLexicalEmbedding:
+    """A lightweight, deterministic embedding that avoids network downloads."""
+
+    def __call__(self, input: list[str]) -> list[list[float]]:
+        vectors: list[list[float]] = []
+        for text in input:
+            normalized = str(text).strip().lower()
+            tokens = re.findall(r"[a-z0-9]+", normalized)
+            if not tokens:
+                vectors.append([0.0, 0.0, 0.0, 0.0, 0.0])
+                continue
+
+            token_count = len(tokens)
+            unique_count = len(set(tokens))
+            first_token = tokens[0]
+            first_token_len = len(first_token)
+            frequency = Counter(tokens)
+            entropy = sum((count / token_count) * math.log2(token_count / count) for count in frequency.values())
+            ordinal_signal = sum(ord(ch) for ch in first_token[:3]) / 1000.0
+            vectors.append([float(token_count), float(unique_count), float(first_token_len), float(entropy), float(ordinal_signal)])
+        return vectors
+
+    def embed_query(self, input: str | list[str]) -> list[list[float]]:
+        if isinstance(input, str):
+            return self([input])
+        return self(input)
+
+    @staticmethod
+    def name() -> str:
+        return "deterministic-lexical-embedding"
+
+    def get_config(self) -> dict[str, Any]:
+        return {}
+
+    @staticmethod
+    def build_from_config(config: dict[str, Any]) -> "DeterministicLexicalEmbedding":
+        return DeterministicLexicalEmbedding()
 
 
 def _safe_collection_name(name: str) -> str:
@@ -40,27 +79,26 @@ class ChromaResearchStore:
 
             client = chromadb.PersistentClient(path=str(self.persist_directory))
         if embedding_function is None:
-            from chromadb.utils.embedding_functions import ONNXMiniLM_L6_V2
-
-            embedding_function = ONNXMiniLM_L6_V2()
-            embedding_function.DOWNLOAD_PATH = (
-                self.persist_directory
-                / ".embedding_cache"
-                / embedding_function.MODEL_NAME
-            )
-            # Configure httpx timeout for model downloads
-            try:
-                import httpx
-                # Set default timeout to 120 seconds
-                embedding_function._client_config = {"timeout": 120.0}
-            except Exception:
-                pass  # If configuration fails, continue with defaults
+            embedding_function = DeterministicLexicalEmbedding()
 
         self.client = client
         self.embedding_function = embedding_function
         self.collection = self._get_or_create_collection()
 
     def _get_or_create_collection(self) -> Any:
+        existing_collection = None
+        try:
+            existing_collection = self.client.get_collection(name=self.collection_name)
+        except Exception:
+            existing_collection = None
+
+        if existing_collection is not None and isinstance(self.embedding_function, DeterministicLexicalEmbedding):
+            try:
+                self.client.delete_collection(self.collection_name)
+            except Exception:
+                pass
+            existing_collection = None
+
         return self.client.get_or_create_collection(
             name=self.collection_name,
             embedding_function=self.embedding_function,
