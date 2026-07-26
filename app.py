@@ -96,22 +96,21 @@ def _render_sidebar(store: ChromaResearchStore) -> dict[str, object]:
         if provider == "groq":
             saved_key = _secret("GROQ_API_KEY")
             default_model = _secret("GROQ_ANSWER_MODEL", GROQ_DEFAULT_ANSWER_MODEL)
-            key_name = "GROQ_API_KEY"
         else:
             saved_key = _secret("OPENROUTER_API_KEY")
             default_model = _secret(
                 "OPENROUTER_ANSWER_MODEL",
                 OPENROUTER_DEFAULT_ANSWER_MODEL,
             )
-            key_name = "OPENROUTER_API_KEY"
 
-        api_key = saved_key or st.text_input(
-            f"{provider_label} API key",
-            type="password",
-            help=f"Used only for this browser session. For deployment, save {key_name} in Streamlit secrets.",
-        )
+        api_key = saved_key
         if saved_key:
-            st.success(f"{provider_label} key loaded", icon="✓")
+            st.success(f"{provider_label} is ready", icon="✓")
+        else:
+            st.warning(
+                f"{provider_label} is not configured by the app owner.",
+                icon="⚠️",
+            )
 
         answer_model = st.text_input("Answer model", value=default_model)
 
@@ -287,8 +286,8 @@ def _render_chat(
 
     if not runtime["has_api_key"]:
         answer = (
-            f"Add a {runtime['provider_label']} API key in the sidebar, or configure it in "
-            "`.streamlit/secrets.toml`, then ask again."
+            f"{runtime['provider_label']} is not configured. The app owner must add its API key "
+            "to the server's Streamlit secrets."
         )
         st.session_state.messages.append(
             {"role": "assistant", "content": answer, "sources": []}

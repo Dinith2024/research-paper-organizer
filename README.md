@@ -12,6 +12,7 @@ approaches, inspect source passages, and view the agent execution trace.
 - Persistent ChromaDB vector storage
 - LangGraph workflow: planner → retriever → researcher → critic → optional revision
 - Groq and OpenRouter support through their OpenAI-compatible APIs
+- Server-managed API keys; end users never enter or see provider credentials
 - Inline citations and expandable evidence excerpts
 - Per-browser-session Chroma collection isolation
 - Environment/Streamlit secrets support with no keys in source code
@@ -122,6 +123,9 @@ If both keys are present, Groq's fast model handles planning/critique while the 
 in the sidebar handles the final research answer. If only one key is present, that provider handles
 the entire workflow.
 
+The secrets file belongs to the app owner. End users do not enter API keys in the interface, and
+provider keys are never displayed in the browser.
+
 ### 4. Run the application
 
 ```bash
@@ -215,7 +219,8 @@ python scripts/smoke_check.py
 ## Troubleshooting
 
 **The UI says an API key is missing**  
-Add a key in the sidebar or create `.streamlit/secrets.toml`.
+The app owner must add the provider key to `.streamlit/secrets.toml` locally or to the Streamlit
+Community Cloud **Secrets** settings for a deployed app.
 
 **The provider says the model does not exist**  
 Model catalogs change. Copy a current model ID from Groq/OpenRouter and paste it into the sidebar.
