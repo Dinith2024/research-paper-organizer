@@ -4,6 +4,16 @@ A complete Streamlit application that turns a LangGraph + ChromaDB RAG notebook 
 research workspace. Upload PDF papers, ask grounded questions, generate summaries, compare
 approaches, inspect source passages, and view the agent execution trace.
 
+## Live application
+
+Try ResearchFlow AI here:
+
+**[Open the live Streamlit application](https://research-paper-organizergit-2iwzf87rgqdi8z22ufpysr.streamlit.app/)**
+
+## User interface
+
+![ResearchFlow AI user interface](UI.png)
+
 ## What is included
 
 - Polished Streamlit interface with chat, paper library, and workflow views
